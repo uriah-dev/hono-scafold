@@ -6,6 +6,7 @@ import { getContext } from "hono/context-storage";
 export type RouteType = {
   path: string;
   auth?: boolean;
+  method?: "get" | "post" | "put" | "patch" | "delete"
 };
 
 export type CallbackType = () => Promise<{
@@ -31,10 +32,10 @@ export const getAuthValues = () => {
 };
 
 export const newRoute = (
-  { auth = false, path }: RouteType,
+  { auth = false, path, method = "get" }: RouteType,
   callback: CallbackType
 ) => {
-  app.get(path, async (c) => {
+  app[method](path, async (c) => {
     if (auth) {
       const { user } = getAuthValues();
       if (!user)
